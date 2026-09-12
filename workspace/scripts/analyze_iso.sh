@@ -2,15 +2,15 @@
 
 set -e
 
-ISO_DIR="workspace"
-EXTRACT_DIR="extracted"
-REPORT_DIR="reports"
+ISO_DIR="workspace/input"
+EXTRACT_DIR="workspace/extracted"
+REPORT_DIR="workspace/reports"
 
 ISO=$(find "$ISO_DIR" -maxdepth 1 -type f \( -iname "*.iso" -o -iname "*.bin" \) | head -n 1)
 
 if [ -z "$ISO" ]; then
     echo "Nenhuma ISO encontrada em $ISO_DIR"
-    echo "Coloque o arquivo do jogo em workspace/"
+    echo "Coloque o arquivo do jogo em workspace/input/"
     exit 1
 fi
 

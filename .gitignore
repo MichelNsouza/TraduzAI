@@ -1,5 +1,22 @@
+# workspace/ — território de trabalho
+# input/output/extracted/reports: efêmeros (só .gitkeep versionado)
+# context/ e scripts/: material de apoio VERSIONADO
+
 workspace/*
 !workspace/.gitkeep
+!workspace/*/
+
+workspace/input/*
+!workspace/input/.gitkeep
+
+workspace/output/*
+!workspace/output/.gitkeep
+
+workspace/extracted/*
+!workspace/extracted/.gitkeep
+
+workspace/reports/*
+!workspace/reports/.gitkeep
 
 extracted/*
 !extracted/.gitkeep

@@ -19,18 +19,20 @@ Fluxo esperado:
 
 ## Estrutura
 
-context/      Arquivos de contexto para a IA
+workspace/input/     ISO original (nunca modificar)
 
-workspace/    ISO original
+workspace/extracted/ Conteúdo extraído (efêmero)
 
-extracted/    Arquivos extraídos
+workspace/output/    Resultado final (efêmero)
 
-output/       ISO modificada
+workspace/reports/   Relatórios por etapa (efêmero)
 
-reports/      Relatórios gerados pela IA
+workspace/context/   Conhecimento acumulado (versionado)
 
-scripts/      Scripts auxiliares
+workspace/scripts/   Scripts reutilizáveis (versionado)
+
+setup/               Instalação e docs do agente
 
 ## Status
 
-��� MVP em desenvolvimento.
+MVP em desenvolvimento.

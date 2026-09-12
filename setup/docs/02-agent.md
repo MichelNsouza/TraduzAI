@@ -26,3 +26,7 @@ O agente deve permitir:
 - criar arquivos;
 - editar arquivos;
 - acessar o projeto.
+
+## Orientação
+
+O ponto de entrada é o `AGENTS.md`. Siga a trilha de leitura e consulte `01-install.md`, `03-pipeline.md` e `04-convencoes.md` para saber como atuar e o que promover ao repositório.
