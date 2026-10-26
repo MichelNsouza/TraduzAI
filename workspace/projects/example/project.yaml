@@ -1,0 +1,27 @@
+# TraduzAI Project Config (example)
+# Copy to workspace/projects/<your-game>/project.yaml
+
+game:
+  name: "example-game"
+  platform: "gba"  # nes|snes|megadrive|gba|nds|n64|ps1|ps2|saturn|dreamcast|psp
+  region: "US"
+  
+paths:
+  iso: "workspace/input/"
+  extracted: "workspace/extracted/"
+  output: "workspace/output/"
+  reports: "workspace/reports/"
+  
+tools:
+  preferred_extractor: "7z"  # 7z|quickbms|binwalk
+  preferred_patcher: "flips"
+  
+adapters:
+  enabled: []  # e.g. ["ff1_gba_dos"]
+  
+validation:
+  require_hash_check: true
+  validate_csv_schema: true
+  check_pointer_integrity: false
+  
+notes: "Example project configuration"

@@ -8,14 +8,15 @@ Automatizar o máximo possível o processo de localização de jogos utilizando 
 
 Fluxo esperado:
 
-1. Analisar uma ISO
-2. Extrair seus arquivos
-3. Identificar formatos
+1. Analisar a ISO
+2. Extrair arquivos
+3. Identificar formatos conhecidos
 4. Localizar textos
-5. Traduzir
-6. Reinserir os textos
-7. Reconstruir a ISO
-8. Validar no emulador
+5. Exportar textos
+6. Traduzir
+7. Reinserir
+8. Reconstruir a ISO
+9. Validar no emulador
 
 ## Estrutura
 

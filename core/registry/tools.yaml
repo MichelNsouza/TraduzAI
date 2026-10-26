@@ -1,0 +1,154 @@
+# TraduzAI Tool Registry
+# Catalog of tools for agents - includes automation info, license, limitations
+
+tools:
+  - id: 7z
+    name: 7-Zip
+    category: extraction
+    type: cli
+    description: Extract ISO/archives
+    command: 7z
+    automation:
+      cli: true
+      api: false
+    license: LGPL
+    os: [linux, windows, macos]
+    platforms: [generic]
+    status: active
+    installed_check: "command -v 7z"
+    
+  - id: binwalk
+    name: Binwalk
+    category: discovery
+    type: cli+api
+    description: Firmware/ROM carving and entropy analysis
+    command: binwalk
+    automation:
+      cli: true
+      api: true
+    license: MIT
+    os: [linux, windows, macos]
+    platforms: [generic]
+    status: active
+    installed_check: "command -v binwalk"
+    
+  - id: quickbms
+    name: QuickBMS
+    category: extraction
+    type: cli
+    description: Universal extractor for proprietary formats
+    automation:
+      cli: true
+      api: false
+    license: GPL
+    os: [linux, windows]
+    platforms: [generic, many-consoles]
+    status: active
+    notes: "Scripts .bms are game-specific; build reusable script library"
+    
+  - id: kuriimu2
+    name: Kuriimu2
+    category: format
+    type: cli+library
+    description: Read/write proprietary game archive/format files
+    automation:
+      cli: true
+      api: true
+    license: GPLv3
+    os: [linux, windows, macos]
+    platforms: [many-consoles]
+    status: active
+    notes: "Powerful for format discovery - evaluate for adapter integration"
+    
+  - id: ghidra-headless
+    name: Ghidra (headless)
+    category: reverse-engineering
+    type: cli
+    description: Disassembly/decompilation for pointer/function discovery
+    command: analyzeHeadless
+    automation:
+      cli: true
+      api: true
+    license: Apache-2.0
+    os: [linux, windows, macos]
+    platforms: [all]
+    status: active
+    notes: "Use for discovery, not direct text extraction"
+    
+  - id: imhex
+    name: ImHex
+    category: binary-analysis
+    type: gui+cli
+    description: Hex editor with pattern language
+    automation:
+      cli: partial
+      api: partial
+    license: GPLv2
+    os: [linux, windows, macos]
+    platforms: [generic]
+    status: active
+    
+  - id: flips
+    name: Flips
+    category: patching
+    type: cli+gui
+    description: Create/apply IPS/BPS patches
+    automation:
+      cli: true
+      api: false
+    license: GPLv3
+    os: [linux, windows, macos]
+    platforms: [generic]
+    status: active
+    
+  - id: xdelta3
+    name: xdelta3
+    category: patching
+    type: cli
+    description: Binary diff/patch (xdelta)
+    automation:
+      cli: true
+      api: false
+    license: Apache-2.0
+    os: [linux, windows, macos]
+    platforms: [generic]
+    status: active
+    
+  - id: mgba
+    name: mGBA
+    category: emulation
+    type: cli+libretro
+    description: GBA emulator with good accuracy
+    automation:
+      cli: true
+      api: partial
+    license: MPL-2.0
+    os: [linux, windows, macos]
+    platforms: [gba, gb]
+    status: active
+    
+  - id: retroarch
+    name: RetroArch
+    category: emulation
+    type: cli+gui
+    description: Multi-system emulator frontend
+    automation:
+      cli: true
+      api: partial
+    license: GPLv3
+    os: [linux, windows, macos]
+    platforms: [many]
+    status: active
+    
+  - id: mednafen
+    name: Mednafen
+    category: emulation
+    type: cli
+    description: Accurate multi-system emulator
+    automation:
+      cli: true
+      api: false
+    license: GPLv2
+    os: [linux, windows, macos]
+    platforms: [ps1, snes, gba, psp, etc]
+    status: active

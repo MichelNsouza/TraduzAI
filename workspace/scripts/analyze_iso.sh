@@ -23,6 +23,10 @@ echo "ISO encontrada:"
 echo "$ISO"
 echo ""
 
+echo "Calculando SHA256..."
+sha256sum "$ISO" >> "$REPORT" 2>/dev/null || shasum -a 256 "$ISO" >> "$REPORT" 2>/dev/null || true
+echo ""
+
 mkdir -p "$EXTRACT_DIR"
 mkdir -p "$REPORT_DIR"
 
@@ -42,6 +46,14 @@ cat > "$REPORT" <<REPORT
 ## Arquivo
 
 $ISO
+
+## SHA256
+
+REPORT
+
+sha256sum "$ISO" 2>/dev/null | awk '{print $1}' >> "$REPORT" || shasum -a 256 "$ISO" 2>/dev/null | awk '{print $1}' >> "$REPORT" || echo "N/A" >> "$REPORT"
+
+cat >> "$REPORT" <<REPORT
 
 ## Data
 
