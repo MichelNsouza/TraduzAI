@@ -1,0 +1,36 @@
+{
+  "_comment": "Glossario de pos-edicao FF I & II: Dawn of Souls (EN->PT-BR). Aplicado por workspace/scripts/translate_csv_argos.py e postedit_csv.py apos a traducao automatica. Nomes proprios permanecem em ingles (como no original); termos recorrentes de interface/itens sao fixados para consistencia e para caber nas colunas do jogo.",
+  "fixes": [
+    {"pattern": "\\b(?:O|A|Os|As)\\s+(?=(?:Garland|Bahamut|Matoya|Chaos|Cornelia|Cid|Sarah|Lukahn|Sarda|Astos|Bikke|Nerrick|Smyth|Firion|Maria|Guy|Leon|Hilda|Minwu|Josef|Gordon|Leila|Ricard|Scott|Deist|Kashuan|Fynn|Palamecia|Pandemonium|Ultima|Excalibur|Wyvern)\\b)", "replace": ""},
+    {"pattern": "junta-se (?:à|a|na|ao) (?:festa|equipa|equipe|time|grupo)", "replace": "entra no grupo"},
+    {"pattern": "se junta (?:à|a|na|ao) (?:festa|equipa|equipe|time|grupo)", "replace": "entra no grupo"},
+    {"pattern": "\\bfesta\\b", "replace": "grupo"},
+    {"pattern": "\\bpartido\\b", "replace": "grupo"},
+    {"pattern": "\\ba grupo\\b", "replace": "o grupo"},
+    {"pattern": "O dragão, Ricard", "replace": "O Dragoon, Ricard"},
+    {"pattern": "dragões de Deist", "replace": "Dragoons de Deist"},
+    {"pattern": "\\bGuerreiros da Luz\\b", "replace": "Guerreiros da Luz"},
+    {"pattern": "\\bguerreiros da luz\\b", "replace": "Guerreiros da Luz"},
+    {"pattern": "\\bPontos de Vida\\b", "replace": "HP"},
+    {"pattern": "\\bPontos de Magia\\b", "replace": "MP"},
+
+    {"pattern": "\\bCorreio\\b", "replace": "Cota"},
+    {"pattern": "\\bleme\\b", "replace": "elmo"},
+    {"pattern": "\\bPersianas\\b", "replace": "Cega"},
+    {"pattern": "\\bBani\\b", "replace": "Bane"},
+    {"pattern": "\\bDá danos\\b", "replace": "Causa danos"},
+    {"pattern": "danos relâmpagos", "replace": "danos de raio"},
+    {"pattern": "danos no gelo", "replace": "danos de gelo"},
+    {"pattern": "danos de fogo", "replace": "danos de fogo"},
+    {"pattern": "multi-hued", "replace": "multicolor"},
+    {"pattern": "\\bdulcet\\b", "replace": "suave"},
+    {"pattern": "\\bToken\\b", "replace": "Símbolo"},
+    {"pattern": "\\brapier\\b", "replace": "rapieira"},
+
+    {"pattern": "^Roda de engrenagem$", "replace": "Engrenagem"},
+    {"pattern": "^Manutenção Ocidental$", "replace": "Forte Ocidental"},
+    {"pattern": "^Ligado$", "replace": "Ativo"},
+    {"pattern": "^Desligado$", "replace": "Inativo"},
+    {"pattern": "^Fato leve e durável de uma terra distante\\.$", "replace": "Traje leve e durável de terras distantes."}
+  ]
+}
