@@ -34,6 +34,13 @@ workspace/scripts/   Scripts reutilizáveis (versionado)
 
 setup/               Instalação e docs do agente
 
+## Aviso Legal e Responsabilidade
+
+- **Somente ROMs/ISOs legais:** Utilize apenas cópias de jogos que você possui fisicamente. Não distribuímos, hospedamos ou incentivamos a obtenção ilegal de ROMs, ISOs ou imagens de jogos.
+- **Uso por conta e risco:** Este projeto é fornecido "no estado em que se encontra", sem garantias de qualquer tipo. O uso é de inteira responsabilidade do usuário.
+- **Isenção de responsabilidade:** Os autores e colaboradores não se responsabilizam por qualquer uso indevido, danos, perdas ou consequências legais decorrentes do uso deste software.
+- **Finalidade educacional/pesquisa:** Destinado a fins educacionais, pesquisa e preservação, respeitando as leis aplicáveis em seu país.
+
 ## Status
 
 MVP em desenvolvimento.
