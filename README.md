@@ -34,6 +34,12 @@ workspace/scripts/   Scripts reutilizáveis (versionado)
 
 setup/               Instalação e docs do agente
 
+## Instalação
+
+- **Linux (nativo):** `setup/install.sh` ou scripts em `setup/install/`
+- **Windows (WSL2 recomendado):** veja `setup/docs/06-windows.md`
+- **Windows (nativo):** `setup/install/windows/install.ps1` e `check.ps1`
+
 ## Aviso Legal e Responsabilidade
 
 - **Somente ROMs/ISOs legais:** Utilize apenas cópias de jogos que você possui fisicamente. Não distribuímos, hospedamos ou incentivamos a obtenção ilegal de ROMs, ISOs ou imagens de jogos.
