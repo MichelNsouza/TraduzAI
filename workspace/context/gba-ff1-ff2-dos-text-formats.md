@@ -175,3 +175,28 @@ acentos). Consequências:
   reescreve parágrafos e destrói a estrutura de linhas/linhas em branco do FF1.
   Para o FF2, mensagens centralizadas de uma linha devem ser recentralizadas
   preservando o **centro original**, não a margem esquerda.
+
+## 8. Diagnóstico: trava antes do título / ROM truncada
+
+Sintoma reproduzido: a ROM completa boota, mas se o arquivo for **truncado no
+ponto em que terminavam os dados originais** (`0xEE0760`), o jogo **trava antes
+da tela de título** no gpSP. Motivo: as tabelas de ponteiros continuam no
+arquivo, mas os ponteiros reescritos apontam para `0x08EE0760+`, além do fim do
+arquivo truncado. O mGBA preenche a leitura fora do arquivo com `0xFF` e segue;
+o gpSP não, e trava.
+
+Consequências para suporte e para builds futuras:
+
+- Sempre confirmar **tamanho exato** da ROM no aparelho: 16.777.216 bytes.
+  Tamanhos menores (ex.: 15.599.456 = `0xEE0760`) indicam cópia truncada.
+- Conferir o MD5 no destino; uma cópia por rede/cartão pode truncar.
+- Se o aparelho/core não enxergar o fim da ROM, uma build **em lugar**
+  (sem alterar ponteiros e sem usar o espaço livre) serve de diagnóstico:
+  se ela boota e a completa não, o problema está no fim do arquivo/mapeamento,
+  não na tradução em si.
+- Não concluir que a ROM está corrompida só porque um core trava: testar o
+  mesmo arquivo em mGBA e gpSP e comparar o tamanho/hash no destino separa
+  corrupção de arquivo de diferença de core.
+- Um arquivo truncado em `0xEE0760` ainda contém **todo o texto original**;
+  a tradução é que fica inacessível. Por isso o sintoma é "antes do título"
+  quando o boot lê ponteiros de configuração/menu, e não uma tela em inglês.
