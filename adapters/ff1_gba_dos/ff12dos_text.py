@@ -36,11 +36,21 @@ FF2 (FINAL FANTASY II - script principal):
 
 Reinsercao
 ----------
-Todas as strings referenciadas por tabela sao realocadas para o espaco livre
-(0xEE0760-0x01000000, preenchido com 0xFF) e os ponteiros sao atualizados.
-O texto original permanece intacto no ROM, portanto qualquer referencia
-nao mapeada continua apontando para texto valido (no pior caso, uma linha
-fica em ingles) - nunca para dados corrompidos.
+Modo padrao (`insert`): todas as strings referenciadas por tabela sao
+realocadas para o espaco livre (0xEE0760-0x01000000, preenchido com 0xFF) e os
+ponteiros sao atualizados. As strings originais ficam intactas.
+
+Modo compacto (`insert-packed`): as traducoes sao reempacotadas dentro dos
+proprios slots de texto originais (antes de 0xEE0760) e os ponteiros sao
+atualizados. Nada e escrito no espaco livre do fim da ROM. E util para
+aparelhos/copias que truncam ou ignoram o final do arquivo; em troca, o texto
+original dos slots reutilizados e sobrescrito (os slots de entradas nao
+traduzidas sao preservados).
+No modo padrao, o texto original permanece intacto no ROM, portanto qualquer
+referencia nao mapeada continua apontando para texto valido (no pior caso, uma
+linha fica em ingles) - nunca para dados corrompidos. No modo compacto, os
+slots reutilizados sao sobrescritos; referencias rigidas nao mapeadas para o
+meio desses slots podem exibir outro texto.
 
 Uso
 ---
@@ -490,6 +500,114 @@ def insert(data: bytes, manifest, translations):
     return bytes(out), free
 
 
+def insert_packed(data: bytes, manifest, translations):
+    """Reempacota as traducoes nos slots de texto originais (antes do espaco livre).
+
+    Nenhum byte e escrito em [FREE_SPACE, ROM_SIZE) e nenhum ponteiro aponta
+    para la. Todos os bytes reutilizados pertencem a strings de entradas que
+    serao traduzidas; bytes de entradas nao traduzidas (ou skip) sao
+    preservados e ficam fora dos intervalos usados.
+
+    Retorna (rom_bytes, stats). Levanta SystemExit se a compactacao nao couber.
+    """
+    out = bytearray(data)
+    limit = FREE_SPACE
+
+    def original_range(entry):
+        off = entry["rom_offset"]
+        if entry["encoding"] == "ff1":
+            _, end = decode_ff1(data, off)
+            if end is None:
+                return None
+            return off, end - off + 1
+        _, end = decode_ff2(data, off)
+        if end is None:
+            return None
+        return off, end - off
+
+    # Marca byte a byte o que pode ser sobrescrito. Um byte coberto por uma
+    # entrada nao traduzida nunca e reutilizado.
+    cov_t = bytearray(limit)
+    cov_u = bytearray(limit)
+    for entry in manifest["entries"]:
+        r = original_range(entry)
+        if r is None:
+            continue
+        off, ln = r
+        if off >= limit:
+            continue
+        end = min(off + ln, limit)
+        if end <= off:
+            continue
+        translated = entry["id"] in translations and not entry.get("skip")
+        arr = cov_t if translated else cov_u
+        arr[off:end] = b"\x01" * (end - off)
+
+    usable = bytearray(1 if cov_t[i] and not cov_u[i] else 0 for i in range(limit))
+    runs = []
+    i = 0
+    while i < limit:
+        if usable[i]:
+            j = i
+            while j < limit and usable[j]:
+                j += 1
+            runs.append([i, j - i, 0])       # inicio, capacidade, usado
+            i = j
+        else:
+            i += 1
+
+    # Uma chave por sequencia codificada; varias entradas podem compartilhar.
+    items = {}
+    for entry in manifest["entries"]:
+        if entry["id"] not in translations or entry.get("skip"):
+            continue
+        text = translations[entry["id"]].strip("\n")
+        enc = entry["encoding"]
+        raw = encode_ff1(text) if enc == "ff1" else encode_ff2(text)
+        items.setdefault((enc, raw), []).append(entry)
+
+    bins = sorted(runs, key=lambda b: b[1], reverse=True)
+    placement = {}
+    failed = []
+    for key in sorted(items, key=lambda k: len(k[1]), reverse=True):
+        size = len(key[1])
+        for b in bins:
+            if b[1] - b[2] >= size:
+                placement[key] = b[0] + b[2]
+                b[2] += size
+                break
+        else:
+            failed.append((size, key[0]))
+    if failed:
+        raise SystemExit("compactacao impossivel: %d itens, %d bytes"
+                         % (len(failed), sum(s for s, _ in failed)))
+
+    ptr_updates = 0
+    last = 0
+    for key, off in placement.items():
+        raw = key[1]
+        out[off:off + len(raw)] = raw
+        last = max(last, off + len(raw))
+        for entry in items[key]:
+            struct.pack_into("<I", out, entry["ptr_site"], GBA_BASE + off)
+            ptr_updates += 1
+
+    if any(x != 0xFF for x in out[FREE_SPACE:]):
+        raise SystemExit("espaco livre foi alterado")
+    stats = {
+        "items": len(items),
+        "bytes": sum(len(k[1]) for k in items),
+        "capacity": sum(b[1] for b in bins),
+        "runs": len(bins),
+        "used_runs": sum(1 for b in bins if b[2]),
+        "ptr_updates": ptr_updates,
+        "last": last,
+    }
+    print("  compactado: %d bytes unicos, %d strings, %d ponteiros, ultimo byte 0x%X"
+          % (stats["bytes"], stats["items"], stats["ptr_updates"], stats["last"]))
+    return bytes(out), stats
+
+
 # ---------------------------------------------------------------------------
 # CSV
 # ---------------------------------------------------------------------------
@@ -541,6 +659,13 @@ def main(argv=None):
     i.add_argument("--csv", nargs="+", required=True)
     i.add_argument("--out", required=True)
 
+    ip = sub.add_parser("insert-packed",
+                        help="reinsere traducoes nos slots originais (sem usar o fim da ROM)")
+    ip.add_argument("--rom", required=True)
+    ip.add_argument("--manifest", required=True)
+    ip.add_argument("--csv", nargs="+", required=True)
+    ip.add_argument("--out", required=True)
+
     v = sub.add_parser("verify", help="re-extrai o ROM gerado e compara com os CSVs")
     v.add_argument("--rom", required=True)
     v.add_argument("--manifest", required=True)
@@ -576,6 +701,13 @@ def main(argv=None):
 
     if a.cmd == "insert":
         new, free = insert(data, manifest, trans)
+        with open(a.out, "wb") as fh:
+            fh.write(new)
+        print("  ROM gerado: %s (%d bytes)" % (a.out, len(new)))
+        return 0
+
+    if a.cmd == "insert-packed":
+        new, stats = insert_packed(data, manifest, trans)
         with open(a.out, "wb") as fh:
             fh.write(new)
         print("  ROM gerado: %s (%d bytes)" % (a.out, len(new)))

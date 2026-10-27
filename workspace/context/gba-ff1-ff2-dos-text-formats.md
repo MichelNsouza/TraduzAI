@@ -200,3 +200,30 @@ Consequências para suporte e para builds futuras:
 - Um arquivo truncado em `0xEE0760` ainda contém **todo o texto original**;
   a tradução é que fica inacessível. Por isso o sintoma é "antes do título"
   quando o boot lê ponteiros de configuração/menu, e não uma tela em inglês.
+
+## 9. Modo compacto: traduzir sem usar o fim da ROM
+
+Para aparelhos/cópias que não enxergam o espaço livre final, existe
+`insert-packed` no adaptador. Em vez de realocar para `0xEE0760+`, ele:
+
+1. Marca byte a byte os intervalos das strings originais que serão traduzidas.
+   Qualquer byte coberto por uma entrada não traduzida/skip é **excluído**.
+2. Junta os intervalos contíguos em "runs" reutilizáveis.
+3. Empacota as strings únicas com first-fit decreasing, sem alinhamento
+   obrigatório (as strings originais também não são alinhadas).
+4. Atualiza todos os `ptr_site` para os novos offsets e não escreve nada em
+   `[0xEE0760, 0x01000000)`.
+
+Números da execução (FF1&2 DOS, 2026-10-27):
+
+- 6.219 strings únicas, 392.119 bytes.
+- Capacidade reutilizável: 398.180 bytes.
+- Último byte escrito: `0x295E7E`.
+- 8.216 ponteiros atualizados; `verify`: 8.216 ok, 0 divergentes.
+- ROM truncada em `0xEE0760` boota no gpSP (a v1 truncada travava).
+
+Limite: o texto original dos slots reutilizados é sobrescrito. Se houver
+referências rígidas fora das tabelas mapeadas para o meio de um slot, elas
+podem exibir outro texto; o `verify` cobre apenas as entradas mapeadas. Para
+máxima fidelidade ao original, use `insert`; para compatibilidade com o fim da
+ROM, use `insert-packed`.

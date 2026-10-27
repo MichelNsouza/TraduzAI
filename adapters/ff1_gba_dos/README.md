@@ -47,7 +47,28 @@ python3 adapters/ff1_gba_dos/ff12dos_text.py verify \
     --csv workspace/output/ff1ff2dos_gba/traducao/ff1.csv \
           workspace/output/ff1ff2dos_gba/traducao/ff2.csv \
           workspace/output/ff1ff2dos_gba/traducao/manual.csv
+
+# 3b) modo compacto: reempacota nos slots originais (não usa o fim da ROM)
+python3 adapters/ff1_gba_dos/ff12dos_text.py insert-packed \
+    --rom workspace/extracted/ff1ff2dos_gba/rom_original.gba \
+    --manifest workspace/output/ff1ff2dos_gba/text/manifest.json \
+    --csv workspace/output/ff1ff2dos_gba/traducao/ff1.csv \
+          workspace/output/ff1ff2dos_gba/traducao/ff2.csv \
+          workspace/output/ff1ff2dos_gba/traducao/manual.csv \
+    --out workspace/output/ff1ff2dos_gba/v2/FF1-2-Dawn-of-Souls-PTBR-v2.gba
 ```
+
+## Modos de reinserção
+
+- `insert` (v1): realoca todo o texto para o espaço livre
+  `0xEE0760-0x01000000`, alinhando cada string em 4 bytes. As strings originais
+  ficam intactas. É o modo que gera a ROM v1.
+- `insert-packed` (v2): reempacota as traduções **dentro dos slots de texto
+  originais**, antes de `0xEE0760`, e atualiza os ponteiros. Não escreve nada
+  no fim da ROM. Vantagem: sobrevive a cópias truncadas em `0xEE0760` e a
+  loaders que ignoram o final do arquivo. Custo: os slots reutilizados perdem
+  o texto original (entradas não traduzidas/skip são preservadas). Use
+  `verify` normalmente; a checagem é a mesma.
 
 ## O que é traduzido
 
