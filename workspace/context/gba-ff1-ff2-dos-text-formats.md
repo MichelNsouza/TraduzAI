@@ -209,8 +209,9 @@ Para aparelhos/cópias que não enxergam o espaço livre final, existe
 1. Marca byte a byte os intervalos das strings originais que serão traduzidas.
    Qualquer byte coberto por uma entrada não traduzida/skip é **excluído**.
 2. Junta os intervalos contíguos em "runs" reutilizáveis.
-3. Empacota as strings únicas com first-fit decreasing, sem alinhamento
-   obrigatório (as strings originais também não são alinhadas).
+3. Empacota as strings únicas com first-fit decreasing. FF1 é byte a byte e
+   pode ficar em qualquer offset; FF2 usa glifos de 16 bits e é alinhado em
+   2 bytes (todos os offsets FF2 originais são pares).
 4. Atualiza todos os `ptr_site` para os novos offsets e não escreve nada em
    `[0xEE0760, 0x01000000)`.
 

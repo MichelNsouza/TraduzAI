@@ -571,10 +571,15 @@ def insert_packed(data: bytes, manifest, translations):
     failed = []
     for key in sorted(items, key=lambda k: len(k[1]), reverse=True):
         size = len(key[1])
+        # FF2 usa glifos de 16 bits: o inicio precisa ser par, como no pool
+        # original. FF1 e byte a byte e pode ficar em qualquer offset.
+        align = 2 if key[0] == "ff2" else 1
         for b in bins:
-            if b[1] - b[2] >= size:
-                placement[key] = b[0] + b[2]
-                b[2] += size
+            start = b[0] + b[2]
+            pad = (-start) % align
+            if b[2] + pad + size <= b[1]:
+                placement[key] = start + pad
+                b[2] += pad + size
                 break
         else:
             failed.append((size, key[0]))
