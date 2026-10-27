@@ -75,8 +75,9 @@ vizinhas pode ficar imperfeita. Rótulos de mapa/eventos de 2 linhas já contêm
   descrições de itens/magias e alguns nomes de menu podem ser cortados.
 - Tradução automática (Argos) com pós-edição PT-BR: boa para jogar, mas não
   substitui revisão humana.
-- Sem emulador disponível no ambiente: a validação é estrutural (re-extração
-  + comparação byte a byte), não visual.
+- **Sem teste visual completo:** o boot foi validado com um mGBA 0.10.5
+  portátil sob Xvfb (título e menus), mas não houve jogo completo. O usuário
+  relatou "o jogo não abre" em outro ambiente; causa em investigação.
 - Strings de tabelas não mapeadas por ponteiro permanecem em inglês (não há
   nenhuma conhecida com texto real).
 
@@ -89,6 +90,14 @@ vizinhas pode ficar imperfeita. Rótulos de mapa/eventos de 2 linhas já contêm
   100% `0xFF`). Header `FF1&2DAWNOFS`/`BFFE` preservado.
 - ROM: `workspace/output/ff1ff2dos_gba/FF1-2-Dawn-of-Souls-PTBR.gba`
   (MD5 `45d206cb88a4404b6e0f8a4388395c6a`).
+
+## Versionamento de saída
+
+- A ROM corrente fica em `workspace/output/ff1ff2dos_gba/`.
+- Cada versão fechada é copiada para `workspace/output/ff1ff2dos_gba/vN/`
+  junto com os CSVs, o `manifest.json` e um `VERSAO.md`/`md5.txt`.
+- **Nunca sobrescrever uma versão anterior**: ao gerar a v2, a v1 permanece
+  intacta (mesma regra para v3, etc.).
 
 ## Notas de engenharia reversa
 
